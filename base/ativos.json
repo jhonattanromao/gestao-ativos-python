@@ -1,13 +1,29 @@
 {
-    "proximo_id": 2,
+    "proximo_id": 4,
     "ativos": [
         {
-            "id": "1",
+            "id": 1,
             "nome": "Notebook Dell Latitude",
             "status": "Em uso",
             "setor": "TI",
             "data_cadastro": "2025-01-10",
             "numero_serie": "DL2024XYZ"
+        },
+        {
+            "id": 2,
+            "nome": "TESTE",
+            "status": "Inutilizado",
+            "setor": "Gerência",
+            "data_cadastro": "11/03/2026 16:52:13",
+            "numero_serie": "DSADSA"
+        },
+        {
+            "id": 3,
+            "nome": "teste",
+            "status": "Alocado",
+            "setor": "Comercial",
+            "data_cadastro": "11/03/2026 18:36:55",
+            "numero_serie": "D89WD45S"
         }
     ]
 }
