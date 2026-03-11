@@ -1,0 +1,13 @@
+{
+    "proximo_id": 2,
+    "ativos": [
+        {
+            "id": "1",
+            "nome": "Notebook Dell Latitude",
+            "status": "Em uso",
+            "setor": "TI",
+            "data_cadastro": "2025-01-10",
+            "numero_serie": "DL2024XYZ"
+        }
+    ]
+}
