@@ -1,5 +1,5 @@
 {
-    "proximo_id": 4,
+    "proximo_id": 6,
     "ativos": [
         {
             "id": 1,
@@ -24,6 +24,36 @@
             "setor": "Comercial",
             "data_cadastro": "11/03/2026 18:36:55",
             "numero_serie": "D89WD45S"
+        },
+        {
+            "id": 4,
+            "nome": "Celular",
+            "status": "Disponível",
+            "setor": "Comercial",
+            "data_cadastro": "11/03/2026 23:56:14",
+            "numero_serie": "HDS76"
+        },
+        {
+            "id": 5,
+            "nome": "Iphone 13",
+            "status": "Disponível",
+            "setor": "Financeiro",
+            "data_cadastro": "12/03/2026 00:10:07",
+            "numero_serie": "FD4GF43V26UB"
+        },
+        {
+            "id": 1,
+            "nome": "Notebook Dell Latitude 5050",
+            "status": "Disponível",
+            "setor": "TI",
+            "numero_serie": ""
+        },
+        {
+            "id": 1,
+            "nome": "Notebook Dell Latitude 5050",
+            "status": "Disponível",
+            "setor": "TI",
+            "numero_serie": ""
         }
     ]
 }

@@ -30,14 +30,14 @@ def cadastrar_ativo(): # Coleta e cadastra informações do ativo
 
     id = dados["proximo_id"]
     nome = input("Digite o nome do produto: ").strip()
-
+    
     for index, st in enumerate(lista_status):
         print(f"[{index}] {st}")
-    status = int(input("Digite o numero do status: ").strip())
+    status = int(input("Defina o status: ").strip())
 
     for index, se in enumerate(setores):
         print(f"[{index}] {se}")
-    setor = int(input("Digite o setor correspondente [ex: 1]: ").strip())
+    setor = int(input("Digite o setor: ").strip())
 
     numero_serie = input("Digite o número de série: ").strip().upper()
     data_cadastro = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -70,7 +70,39 @@ def buscar_ativo(): # Filtra ativos por ID
             print(f"Criado em: {ativo["data_cadastro"]}")
 
 def editar_ativo(): # Edita ativo cadastrado/existente
-    print("N/A")
+    global lista_status
+    global setores
+
+    busca = int(input("Digite o ID do produto: ").strip())
+
+    for ativo in dados["ativos"]:
+        if ativo["id"] == busca:
+            id = ativo["id"]
+            nome = ativo["nome"]
+            status = ativo["status"]
+            setor = ativo["setor"]
+            numero_serie = ativo["numero_serie"]
+
+            console.print(f"[bold magenta]Nome Atual:[/bold magenta] {nome}")
+            nome = input("Digite o novo nome: ") or nome
+
+            console.print(f"[bold magenta]Status Atual:[/bold magenta] {status}")
+            for index, st in enumerate(lista_status):
+                print(f"[{index}] {st}")
+            status = int(input("Digite o novo status: "))
+
+            console.print(f"[bold magenta]Setor Atual:[/bold magenta] {setor}")
+            for index, se in enumerate(setores):
+                print(f"[{index}] {se}")
+            setor = int(input("Digite o novo setor: "))
+
+            console.print(f"[bold magenta]Nº de Série Atual:[/bold magenta] {numero_serie}")
+            numero_serie = input("Digite o novo Nº de Série: ")
+
+            dados["ativos"].append({"id": id, "nome": nome, "status": lista_status[status], "setor": setores[setor], "numero_serie": numero_serie})
+            break
+    
+    salvar_ativos(dados)
 
 def remover_ativo(): # Remove ativo cadastrado
     print("N/A")
