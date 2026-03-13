@@ -1,6 +1,6 @@
-# ⚙️ Sistema de Gestão de Ativos
+# ⚙️ Sistema de Gestão de Ativos - Python
 
-> Aplicação CLI para gerenciamento de ativos corporativos com dashboard interativo.
+> Sistema via terminal para gerenciamento de ativos com dashboard interativo utilizando Streamlit.
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)
 ![Rich](https://img.shields.io/badge/Rich-CLI-blueviolet)
@@ -11,7 +11,7 @@
 
 ## 📌 Sobre o Projeto
 
-Este é um sistema de gestão de ativos de TI desenvolvido em Python, com interface de terminal estilizada utilizando Rich e dashboard visual simples com Streamlit. Permite cadastrar, listar, buscar, editar e remover ativos corporativos, com salvamento em arquivo JSON e registro de logs automático utilizando o módulo Logging.
+Este é um sistema de gestão de ativos de TI desenvolvido em Python, com interface de terminal estilizada utilizando Rich e dashboard visual simples com Streamlit. Permite cadastrar, listar, buscar, editar e remover ativos corporativos, com armazenamento em arquivo JSON e registro de logs automático utilizando o módulo Logging.
 
 Projeto desenvolvido como exercício prático de lógica, estruturação de código e uso de bibliotecas Python.
 
@@ -26,7 +26,7 @@ Projeto desenvolvido como exercício prático de lógica, estruturação de cód
 - ✅ Exclusão com confirmação
 - ✅ Dashboard interativo com gráficos (Streamlit + Pandas)
 - ✅ Registro de logs com data e hora
-- ✅ Salvamento de dados em JSON
+- ✅ Armazenamento de dados em JSON
 
 ---
 
@@ -39,7 +39,7 @@ Projeto desenvolvido como exercício prático de lógica, estruturação de cód
 | Streamlit | Dashboard visual no navegador |
 | Pandas | Manipulação de dados para relatórios |
 | Logging | Registro de logs do sistema |
-| JSON | Salvamento de dados |
+| JSON | Armazenamento de dados |
 
 ---
 
@@ -89,7 +89,20 @@ python main.py
 
 ## 📷 Preview
 
-> *Adicione aqui prints do terminal e do dashboard para deixar o README mais visual.*
+<table>
+  <tr>
+    <td align="center">Menu Principal</td>
+    <td align="center">Dashboard</td>
+    <td align="center">Listagem</td>
+    <td align="center">Validações</td>
+  </tr>
+  <tr>
+    <td><img src="assets/menu.png" width="300"/></td>
+    <td><img src="assets/dashboard.png" width="300"/></td>
+    <td><img src="assets/listagem.png" width="300"/></td>
+    <td><img src="assets/validacoes.png" width="300"/></td>
+  </tr>
+</table>
 
 ---
 

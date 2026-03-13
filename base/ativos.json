@@ -1,13 +1,53 @@
 {
-    "proximo_id": 4,
+    "proximo_id": 7,
     "ativos": [
         {
+            "id": 1,
+            "nome": "Notebook Dell Latitude 5540",
+            "status": "Alocado",
+            "setor": "TI",
+            "data_cadastro": "10/01/2025 09:15:00",
+            "numero_serie": "DL5540-BR0012"
+        },
+        {
             "id": 2,
-            "nome": "Celular Android",
+            "nome": "Monitor LG UltraWide 29\"",
             "status": "Disponível",
+            "setor": "Comercial",
+            "data_cadastro": "15/01/2025 14:30:00",
+            "numero_serie": "LG29UW-BR0047"
+        },
+        {
+            "id": 3,
+            "nome": "Impressora HP LaserJet Pro",
+            "status": "Manutenção",
             "setor": "RH",
-            "data_cadastro": "12/03/2026 21:34:38",
-            "numero_serie": "S8F4DD2W4"
+            "data_cadastro": "22/02/2025 10:00:00",
+            "numero_serie": "HPLJ-BR0093"
+        },
+        {
+            "id": 4,
+            "nome": "Switch Cisco Catalyst 2960",
+            "status": "Alocado",
+            "setor": "TI",
+            "data_cadastro": "05/03/2025 08:45:00",
+            "numero_serie": "CSCO2960-BR0011"
+        },
+        {
+            "id": 5,
+            "nome": "Teclado e Mouse Logitech MK540",
+            "status": "Inutilizado",
+            "setor": "Financeiro",
+            "data_cadastro": "18/03/2025 16:20:00",
+            "numero_serie": "LGT-MK540-BR0028"
+        },
+        {
+            "id": 6,
+            "nome": "Teste",
+            "status": "Disponível",
+            "setor": "Financeiro",
+            "data_cadastro": "12/03/2026 22:41:22",
+            "numero_serie": "123"
         }
     ]
 }
