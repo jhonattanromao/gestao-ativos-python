@@ -2,10 +2,24 @@ import json, os, subprocess, sys, logging
 from datetime import datetime
 from rich import print
 from rich.console import Console
+import modulos.validacoes as validacoes
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-ARQUIVO_BASE = os.path.join(BASE_DIR, "base", "ativos.json")
-console = Console()
+ARQUIVO_BASE = os.path.join(BASE_DIR, "base", "ativos.json") # Arquivo de base de dados (JSON)
+ARQUIVO_LOG = os.path.join(BASE_DIR, "base", "logs.log") # Arquivo de base de dados (JSON)
+console = Console() # Instância Rich para estilização
+
+# Configuração de Log utilizando módulo Logging
+logging.basicConfig(
+    filename=ARQUIVO_LOG,
+    level=logging.INFO,
+    format="%(asctime)s — %(message)s",
+    datefmt="%d/%m/%Y %H:%M:%S",
+    encoding="utf-8"
+)
+
+def registrar_log(mensagem):
+    logging.info(mensagem)
 
 # MANIPULAÇÃO JSON
 def carregar_ativos(): # Lê arquivo JSON de base de dados
@@ -20,7 +34,7 @@ def salvar_ativos(dados): # Salva dados no arquivo JSON
         json.dump(dados, base_json, indent=4, ensure_ascii=False)
 
 dados = carregar_ativos()
-setores = ("TI", "RH", "Comercial", "Financeiro", "Gerência")
+setores = ("TI", "RH", "Comercial", "Financeiro")
 lista_status = ("Disponível", "Alocado", "Manutenção", "Inutilizado")
 
 # FUNÇÕES DE MENU
@@ -29,52 +43,110 @@ def cadastrar_ativo(): # Coleta e cadastra informações do ativo
     global setores
 
     id = dados["proximo_id"]
-    nome = input("Digite o nome do produto: ").strip()
-    
+    if validacoes.validaId(dados, id) == False:
+        console.print("ERRO: Este ID já está cadastrado!", style="white on red")
+        return
+
+    while True:
+        nome = input("Digite o nome do produto: ").strip()
+        if validacoes.validaCampoVazio(nome) == False:
+            continue
+        else:
+            break
+
     for index, st in enumerate(lista_status):
         print(f"[{index}] {st}")
-    status = int(input("Defina o status: ").strip())
+
+    while True:
+        status = input("Defina o status: ").strip()
+        if validacoes.validaCampoVazio(status) == False or validacoes.validaCampoInt(status) == False or validacoes.validaIndex(lista_status, status) == False:
+            continue
+        else:
+            status = int(status)
+            break
 
     for index, se in enumerate(setores):
         print(f"[{index}] {se}")
-    setor = int(input("Digite o setor: ").strip())
 
-    numero_serie = input("Digite o número de série: ").strip().upper()
+    while True:
+        setor = input("Digite o setor: ").strip()
+        if validacoes.validaCampoVazio(setor) == False or validacoes.validaCampoInt(setor) == False or validacoes.validaIndex(setores, status) == False:
+            continue
+        else:
+            setor = int(setor)
+            break
+
+    while True:
+        numero_serie = input("Digite o número de série: ").strip().upper()
+
+        if validacoes.validaCampoVazio(numero_serie) == False:
+            continue
+        else:
+            break
+
     data_cadastro = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-    dados["ativos"].append({"id": id, "nome": nome, "status": lista_status[status], "setor": setores[setor], "data_cadastro": data_cadastro, "numero_serie": numero_serie})
-    dados["proximo_id"] += 1
-
-    salvar_ativos(dados)
+    try:
+        dados["ativos"].append({"id": id, "nome": nome, "status": lista_status[status], "setor": setores[setor], "data_cadastro": data_cadastro, "numero_serie": numero_serie})
+        dados["proximo_id"] += 1
+        salvar_ativos(dados)
+        registrar_log(f"[CADASTRO] {id} - {nome}")
+        console.print(f"Produto cadastrado com sucesso!", style="bold white on green")
+    except Exception as e:
+        registrar_log(f"[ERRO] {e}")
+        console.print(f"ERRO: {e}", style="white on red")
 
 def listar_ativos(): # Lista todos os ativos cadastrados
-    for produto in dados["ativos"]:
-        print(f"ID: {produto["id"]}")
-        print(f"Nome: {produto["nome"]}")
-        print(f"Status: {produto["status"]}")
-        print(f"Setor: {produto["setor"]}")
-        print(f"Número de Série: {produto["numero_serie"]}")
-        print(f"Criado em: {produto["data_cadastro"]}")
-        print("==========")
+    if not dados["ativos"]:
+        console.print("Nenhum produto cadastrado.", style="bold white on yellow")
+
+    try:
+        for produto in dados["ativos"]:
+            console.print(f"[green bold]ID: [/green bold]{produto["id"]}")
+            console.print(f"[green bold]Nome: [/green bold]{produto["nome"]}")
+            console.print(f"[green bold]Status: [/green bold]{produto["status"]}")
+            console.print(f"[green bold]Setor: [/green bold]{produto["setor"]}")
+            console.print(f"[green bold]Número de Série: [/green bold]{produto["numero_serie"]}")
+            console.print(f"[green bold]Criado em: [/green bold]{produto["data_cadastro"]}")
+            console.print("==========")
+    except Exception as e:
+        console.print(f"ERRO: {e}", style="white on red")
 
 def buscar_ativo(): # Filtra ativos por ID
-    busca = int(input("Digite o ID do produto: ").strip())
-
-    for ativo in dados["ativos"]:
-        if ativo["id"] == busca:
-            print(f"ID: {ativo["id"]}")
-            print(f"Nome: {ativo["nome"]}")
-            print(f"Status: {ativo["status"]}")
-            print(f"Setor: {ativo["setor"]}")
-            print(f"Número de Série: {ativo["numero_serie"]}")
-            print(f"Criado em: {ativo["data_cadastro"]}")
+    while True:
+        busca = input("Digite o ID do produto: ").strip()
+        if validacoes.validaCampoVazio(busca) == False or validacoes.validaCampoInt(busca) == False:
+            continue
+        else:
+            busca = int(busca)
+            break
+    try:
+        for ativo in dados["ativos"]:
+            if ativo["id"] == busca:
+                console.print(f"[green bold]ID: [/green bold]{ativo["id"]}")
+                console.print(f"[green bold]Nome: [/green bold]{ativo["nome"]}")
+                console.print(f"[green bold]Status: [/green bold]{ativo["status"]}")
+                console.print(f"[green bold]Setor: [/green bold]{ativo["setor"]}")
+                console.print(f"[green bold]Número de Série: [/green bold]{ativo["numero_serie"]}")
+                console.print(f"[green bold]Criado em: [/green bold]{ativo["data_cadastro"]}")
+                break
+        else:
+            console.print("Nenhum produto encontrado.", style="bold white on yellow")
+    except Exception as e:  
+        console.print(f"ERRO: {e}", style="white on red")
 
 def editar_ativo(): # Edita ativo cadastrado/existente
     global lista_status
     global setores
 
-    busca = int(input("Digite o ID do produto: ").strip())
-
+    while True:
+        busca = input("Digite o ID do produto: ").strip()
+        if validacoes.validaCampoVazio(busca) == False or validacoes.validaCampoInt(busca) == False:
+            continue
+        else:
+            busca = int(busca)
+            break
+        
     for ativo in dados["ativos"]:
         if ativo["id"] == busca:
             id = ativo["id"]
@@ -84,43 +156,112 @@ def editar_ativo(): # Edita ativo cadastrado/existente
             numero_serie = ativo["numero_serie"]
 
             console.print(f"[bold magenta]Nome Atual:[/bold magenta] {nome}")
-            nome = input("Digite o novo nome: ") or nome
+            nome = input("Digite o novo nome: ").strip() or nome
 
             console.print(f"[bold magenta]Status Atual:[/bold magenta] {status}")
             for index, st in enumerate(lista_status):
-                print(f"[{index}] {st}")
-            status = int(input("Digite o novo status: "))
+                print(f"[{index}] {st}", end=" | ")
+            while True:
+                status = input("\nDigite o novo status: ")
+
+                if validacoes.validaCampoInt(status) == False or validacoes.validaIndex(lista_status, status) == False:
+                    continue
+                else:
+                    status = int(status)
+                    break
 
             console.print(f"[bold magenta]Setor Atual:[/bold magenta] {setor}")
             for index, se in enumerate(setores):
-                print(f"[{index}] {se}")
-            setor = int(input("Digite o novo setor: "))
+                print(f"[{index}] {se}", end=" | ")
+            while True:
+                setor = input("\nDigite o novo setor: ")
+
+                if validacoes.validaCampoInt(setor) == False or validacoes.validaIndex(setores, status) == False:
+                    continue
+                else:
+                    setor = int(setor)
+                    break
 
             console.print(f"[bold magenta]Nº de Série Atual:[/bold magenta] {numero_serie}")
-            numero_serie = input("Digite o novo Nº de Série: ")
+            numero_serie = input("Digite o novo Nº de Série: ") or numero_serie
 
-            dados["ativos"].append({"id": id, "nome": nome, "status": lista_status[status], "setor": setores[setor], "numero_serie": numero_serie})
-            break
-    
-    salvar_ativos(dados)
+            try:
+                ativo.update({"id": id, "nome": nome, "status": lista_status[status], "setor": setores[setor], "numero_serie": numero_serie})
+                salvar_ativos(dados)
+                registrar_log(f"[EDITADO] {id} - {nome}")
+                console.print(f"Alterações salvas com sucesso!", style="bold white on green")
+                break
+            except Exception as e:
+                registrar_log(f"[ERRO] {e}")
+                console.print(f"ERRO: Não foi possível salvar as alterações", style="white on red")
+                console.print(f"ERRO: {e}", style="white on red")
+    else:
+        console.print("Nenhum produto encontrado.", style="bold white on yellow")
 
 def remover_ativo(): # Remove ativo cadastrado
-    print("N/A")
-
-def alocar_ativo(): # Define uso de ativo para um setor
-    print("N/A")
-
-def menu_principal():
     while True:
-        console.print("[1] Cadastrar novo ativo")
-        console.print("[2] Listar todos os ativos")
-        console.print("[3] Buscar ativo por ID")
-        console.print("[4] Editar ativo")
+        busca = input("Digite o ID do produto: ").strip()
+        if validacoes.validaCampoVazio(busca) == False or validacoes.validaCampoInt(busca) == False:
+            continue
+        else:
+            busca = int(busca)
+            break
+
+    for ativo in dados["ativos"]:
+        if ativo["id"] == busca:
+            console.print(f"[green bold]ID: [/green bold]{ativo["id"]}")
+            console.print(f"[green bold]Nome: [/green bold]{ativo["nome"]}")
+            console.print(f"[green bold]Status: [/green bold]{ativo["status"]}")
+            console.print(f"[green bold]Setor: [/green bold]{ativo["setor"]}")
+            console.print(f"[green bold]Número de Série: [/green bold]{ativo["numero_serie"]}")
+            console.print(f"[green bold]Criado em: [/green bold]{ativo["data_cadastro"]}")
+            console.print("==========")
+            
+            while True:
+                confirma = input("Confirmar exclusão de produto? [S/N]: ").upper()
+
+                if validacoes.validaCampoVazio(confirma) == False:
+                    continue
+
+                if confirma == "S":
+                    try:
+                        dados["ativos"].remove(ativo)
+                        salvar_ativos(dados)
+                        registrar_log(f"[EXCLUÍDO] {ativo["id"]} - {ativo["nome"]}")
+                        console.print(f"Ativo excluído com sucesso!", style="bold white on green")
+                        break
+                    except Exception as e:
+                        registrar_log(f"[ERRO] {e}")
+                        console.print(f"ERRO: {e}", style="white on red")
+                break
+            break
+    else:
+        console.print("Nenhum produto encontrado.", style="bold white on yellow")
+
+def abrir_dashboard():
+    subprocess.Popen(
+        [sys.executable, "-m", "streamlit", "run", 
+         os.path.join(BASE_DIR, "relatorios", "streamlit.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    console.print("Dashboard aberto no navegador!", style="bold white on green")
+
+def menu_principal(): # Exibe menu principal do programa
+    while True:
+        console.print("\n[1] Cadastrar Novo Ativo")
+        console.print("[2] Listar Todos os Ativos")
+        console.print("[3] Buscar Ativo por ID")
+        console.print("[4] Editar Ativo")
         console.print("[5] Excluir Ativo")
-        console.print("[6] Abrir dashboard")
+        console.print("[6] Abrir Dashboard")
         console.print("[0] Sair\n")
 
-        opcao = int(input("Digite uma opção do menu: "))
+        opcao = input("Digite uma opção do menu: ")
+        if validacoes.validaCampoInt(opcao) == False:
+            continue
+        else:
+            opcao = int(opcao)
 
         if opcao == 1:
             cadastrar_ativo()
@@ -133,13 +274,8 @@ def menu_principal():
         elif opcao == 5:
             remover_ativo()
         elif opcao == 6:
-            print("N/A")
+            abrir_dashboard()
         elif opcao == 0:
             break
         else:
             console.print("Opção inválida")
-
-# dados["ativos"].append({"id": "AT-001", "nome": "Notebook", "status": "", "setor": "", "data_cadastro": "", "numero_serie": ""})
-# dados["proximo_id"] += 1
-# salvar_ativos(dados)
-
